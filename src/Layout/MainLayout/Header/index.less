@@ -1,0 +1,55 @@
+.ant-layout-header {
+  padding: 0 15px 0 0 !important;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 9;
+  // background-color: #fff !important;
+  box-shadow: 0 4px 10px #dddddd;
+  .header-left {
+    padding: 0 15px;
+    flex: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #fff;
+  }
+  .header-right {
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+
+    > * {
+      margin: 15px;
+      height: 100%;
+      line-height: 100%;
+      display: flex;
+      align-items: center;
+      color: #fff;
+    }
+
+    img,
+    svg {
+      width: 20px;
+      height: 20px;
+      cursor: pointer;
+      filter: invert(48%) sepia(79%) saturate(2476%) hue-rotate(86deg)
+        brightness(100) contrast(119%);
+    }
+  }
+  .logo {
+    height: 64px;
+    width: 200px;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9;
+    img {
+      width: 30px;
+      height: 30px;
+    }
+  }
+}

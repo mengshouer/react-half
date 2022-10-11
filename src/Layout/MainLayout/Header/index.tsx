@@ -1,5 +1,5 @@
+import { memo } from "react";
 import { Layout } from "antd";
-import { observer } from "@/store";
 import Logo from "./components/logo";
 import CollapseIcon from "./components/collapseIcon";
 import AvatarIcon from "./components/avatarIcon";
@@ -8,10 +8,8 @@ import GithubIcon from "./components/githubIcon";
 import "./index.less";
 
 function LayoutHeader() {
-  const { Header } = Layout;
-
   return (
-    <Header>
+    <Layout.Header>
       <Logo />
       <div className="header-left">
         <CollapseIcon />
@@ -21,8 +19,8 @@ function LayoutHeader() {
         <SwitchTheme />
         <AvatarIcon />
       </div>
-    </Header>
+    </Layout.Header>
   );
 }
 
-export default observer(LayoutHeader);
+export default memo(LayoutHeader);

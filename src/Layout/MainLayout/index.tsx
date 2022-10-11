@@ -5,25 +5,29 @@ import LayoutSider from "@/Layout/MainLayout/Sider";
 import Tabtag from "./Tabtag";
 import { ThemeSwitcherProvider } from "react-css-theme-switcher";
 import { observer } from "mobx-react-lite";
+import { memo } from "react";
 import { useStore } from "@/store";
 import "antd/dist/antd.min.css";
 import "./index.less";
 
+const { Content } = Layout;
+const layoutStyles = { minHeight: "100vh" };
+const contentStyles = { margin: "0 3px" };
+const themes = {
+  light: "https://cdn.jsdelivr.net/npm/antd@4.22.7/dist/antd.css",
+  dark: "https://cdn.jsdelivr.net/npm/antd@4.22.7/dist/antd.dark.css",
+};
+
 function LayoutIndex() {
-  const { Content } = Layout;
   const { layoutStore } = useStore();
-  const themes = {
-    light: "https://cdn.jsdelivr.net/npm/antd@4.22.7/dist/antd.css",
-    dark: "https://cdn.jsdelivr.net/npm/antd@4.22.7/dist/antd.dark.css",
-  };
 
   return (
     <ThemeSwitcherProvider defaultTheme={layoutStore.theme} themeMap={themes}>
-      <Layout style={{ minHeight: "100vh" }} className="container">
+      <Layout style={layoutStyles} className="container">
         <LayoutHeader />
         <Layout>
           <LayoutSider />
-          <Content style={{ margin: "0 3px" }}>
+          <Content style={contentStyles}>
             <Tabtag />
             <Outlet />
           </Content>
@@ -33,4 +37,4 @@ function LayoutIndex() {
   );
 }
 
-export default observer(LayoutIndex);
+export default memo(observer(LayoutIndex));

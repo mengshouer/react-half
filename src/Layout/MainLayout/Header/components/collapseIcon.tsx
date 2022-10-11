@@ -1,20 +1,22 @@
-import { createElement } from "react";
+import { useCallback } from "react";
 import { MenuFoldOutlined, MenuUnfoldOutlined } from "@ant-design/icons";
 import { useStore, observer } from "@/store";
 
+const visibleStyles = { opacity: 1, cursor: "pointer" };
+const hiddenStyles = { opacity: 0 };
 function CollapseIcon() {
   const { layoutStore } = useStore();
+  const handleClick = useCallback(() => {
+    layoutStore.changeCollapsed();
+  }, []);
   return (
-    <div>
-      {createElement(
-        layoutStore.collapsed ? MenuUnfoldOutlined : MenuFoldOutlined,
-        {
-          className: "collapsed",
-          onClick: () => {
-            layoutStore.changeCollapsed();
-          },
-        }
-      )}
+    <div className="collapsed" onClick={handleClick}>
+      <MenuFoldOutlined
+        style={layoutStore.collapsed ? hiddenStyles : visibleStyles}
+      />
+      <MenuUnfoldOutlined
+        style={layoutStore.collapsed ? visibleStyles : hiddenStyles}
+      />
     </div>
   );
 }

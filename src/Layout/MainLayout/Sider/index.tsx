@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Layout } from "antd";
 import { useStore, observer } from "@/store";
 import MenuList from "./components/menuList";
@@ -19,4 +20,4 @@ function LayoutSider() {
   );
 }
 
-export default observer(LayoutSider);
+export default memo(observer(LayoutSider));

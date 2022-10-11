@@ -1,15 +1,14 @@
 import { useState } from "react";
-import { Button, Form, Input, message, Spin } from "antd";
+import { Button, Form, Input, message } from "antd";
 import { useNavigate } from "react-router-dom";
 import { useRequest } from "ahooks";
 import { ILoginForm } from "@/api/interfaces";
-import { observer, useStore } from "@/store";
+// import { observer, useStore } from "@/store";
 
 import { UserOutlined, LockOutlined, UserAddOutlined } from "@ant-design/icons";
 import { userLogin } from "@/api/modules/login";
 
 const LoginForm = () => {
-  const { authStore } = useStore();
   const navigate = useNavigate();
   const [form] = Form.useForm();
   const [loading, setLoading] = useState<boolean>(false);

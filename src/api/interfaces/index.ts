@@ -1,3 +1,5 @@
+import type { MenuProps } from "antd";
+
 export interface ILoginForm {
   username: string;
   password: string;
@@ -12,8 +14,10 @@ export interface ITheme {
 }
 
 export interface ITabs {
-  title: string;
+  label: string;
   path: string;
+  key: string;
+  closable?: boolean;
 }
 
 export interface MenuOptions {
@@ -24,3 +28,5 @@ export interface MenuOptions {
   close?: boolean;
   children?: MenuOptions[];
 }
+
+export type MenuItem = Required<MenuProps>["items"][number];

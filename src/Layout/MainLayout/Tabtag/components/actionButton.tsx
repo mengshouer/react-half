@@ -4,42 +4,40 @@ import { SettingOutlined } from "@ant-design/icons";
 import { useLocation, useNavigate } from "react-router-dom";
 
 function ActionButton() {
-  const { layoutStore } = useStore();
+  const { menuStore } = useStore();
   const { pathname } = useLocation();
   const navigate = useNavigate();
 
-  const tabList = layoutStore.tabList;
+  const tabList = menuStore.tabList;
 
   // close tab
   const closeMultipleTab = (tabPath: string) => {
     const handleTabsList = tabList.filter((item) => {
       return item.path === tabPath || item.path === "/home";
     });
-    layoutStore.setTbaList(handleTabsList);
+    menuStore.setTbaList(handleTabsList);
     tabPath ?? navigate("/");
   };
 
-  const menu = (
-    <Menu
-      items={[
-        {
-          key: "1",
-          label: <span>关闭当前</span>,
-          onClick: () => layoutStore.removeTab(pathname),
-        },
-        {
-          key: "2",
-          label: <span>关闭其它</span>,
-          onClick: () => closeMultipleTab(pathname),
-        },
-        {
-          key: "3",
-          label: <span>关闭所有</span>,
-          onClick: () => closeMultipleTab(""),
-        },
-      ]}
-    />
-  );
+  const items = [
+    {
+      key: "1",
+      label: <span>关闭当前</span>,
+      onClick: () => menuStore.removeTab(pathname),
+    },
+    {
+      key: "2",
+      label: <span>关闭其它</span>,
+      onClick: () => closeMultipleTab(pathname),
+    },
+    {
+      key: "3",
+      label: <span>关闭所有</span>,
+      onClick: () => closeMultipleTab(""),
+    },
+  ];
+
+  const menu = <Menu items={items} />;
   return (
     <Dropdown
       overlay={menu}

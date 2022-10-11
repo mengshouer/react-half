@@ -1,13 +1,15 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Menu, message, Spin } from "antd";
-import * as Icons from "@ant-design/icons";
 import type { MenuProps } from "antd";
+import * as Icons from "@ant-design/icons";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useStore, observer } from "@/store";
 import { getMenuList } from "@/api/modules/menulist";
-import { MenuOptions } from "@/api/interfaces";
+import { MenuOptions, MenuItem } from "@/api/interfaces";
+
+const menuStyles = { height: "100%", borderRight: 0 };
 
 // 定义侧边类型
-type MenuItem = Required<MenuProps>["items"][number];
 function getItem(
   label: React.ReactNode,
   key: React.Key,
@@ -24,10 +26,10 @@ function getItem(
   } as MenuItem;
 }
 
-export default function MenuList() {
+function MenuList() {
+  const { menuStore } = useStore();
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  const [menuList, setMenuList] = useState<MenuItem[]>([]);
   const [loading, setLoading] = useState(false);
   const [selectedKeys, setSelectedKeys] = useState([pathname]);
 
@@ -38,27 +40,32 @@ export default function MenuList() {
   };
 
   // 处理后台返回菜单 key 值为 antd 菜单需要的 key 值
-  const deepLoopFloat = (menuList: MenuOptions[], newArr: MenuItem[] = []) => {
-    menuList.forEach((item: MenuOptions) => {
-      if (!item.children?.length) {
-        return newArr.push(getItem(item.title, item.path, addIcon(item.icon!)));
-      }
-      newArr.push(
-        getItem(
-          item.title,
-          item.path,
-          addIcon(item.icon!),
-          deepLoopFloat(item.children)
-        )
-      );
-    });
-    return newArr;
-  };
+  const deepLoopFloat = useCallback(
+    (menuList: MenuOptions[], newArr: MenuItem[] = []) => {
+      menuList.forEach((item: MenuOptions) => {
+        if (!item.children?.length) {
+          return newArr.push(
+            getItem(item.title, item.path, addIcon(item.icon!))
+          );
+        }
+        newArr.push(
+          getItem(
+            item.title,
+            item.path,
+            addIcon(item.icon!),
+            deepLoopFloat(item.children)
+          )
+        );
+      });
+      return newArr;
+    },
+    []
+  );
 
   const getMenuItem = async () => {
     setLoading(true);
     try {
-      const data: any = await getMenuList();
+      const data: { code: number; data: MenuOptions[] } = await getMenuList();
       if (data.code === 401) {
         message.error("登录信息失效，请重新登录！");
         navigate("/login");
@@ -66,15 +73,19 @@ export default function MenuList() {
         message.error("获取菜单列表失败！");
         return;
       }
-      setMenuList(deepLoopFloat(data.data));
+      menuStore.setMenuData(data.data);
+      menuStore.setMenuList(deepLoopFloat(data.data));
     } finally {
       setLoading(false);
     }
   };
 
-  const onClick: MenuProps["onClick"] = ({ key }: { key: string }) => {
-    navigate(key);
-  };
+  const onClick: MenuProps["onClick"] = useCallback(
+    ({ key }: { key: string }) => {
+      navigate(key);
+    },
+    []
+  );
 
   useEffect(() => {
     getMenuItem();
@@ -92,10 +103,12 @@ export default function MenuList() {
         mode="inline"
         selectedKeys={selectedKeys}
         defaultOpenKeys={["/home"]}
-        style={{ height: "100%", borderRight: 0 }}
-        items={menuList}
+        style={menuStyles}
+        items={menuStore.menuList}
         className="menu"
       />
     </Spin>
   );
 }
+
+export default observer(MenuList);

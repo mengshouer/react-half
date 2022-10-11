@@ -1,6 +1,4 @@
-import { Navigate, useRoutes } from "react-router-dom";
-import { RouteObject } from "@/routers/interfaces";
-// import Login from "@/views/login";
+import { Navigate, RouteObject, useRoutes } from "react-router-dom";
 
 // * 动态导入router
 const modules: any = import.meta.glob("./modules/*.tsx", { eager: true });

@@ -2,6 +2,8 @@ import { Avatar, Modal, Menu, Dropdown, message } from "antd";
 import { ExclamationCircleOutlined, UserOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 
+const styles = { margin: "8px" };
+
 export default function AvatarIcon() {
   const navigate = useNavigate();
 
@@ -52,7 +54,7 @@ export default function AvatarIcon() {
       <Dropdown overlay={menu} placement="bottom" arrow trigger={["click"]}>
         <Avatar size="large" icon={<UserOutlined />} />
       </Dropdown>
-      <span style={{ margin: "8px" }}>admin</span>
+      <span style={styles}>admin</span>
     </div>
   );
 }

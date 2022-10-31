@@ -1,43 +1,31 @@
-import { useState } from "react";
+import { useCallback } from "react";
 import { Button, Form, Input, message } from "antd";
 import { useNavigate } from "react-router-dom";
-import { useRequest } from "ahooks";
 import { IRegisterForm } from "@/api/interfaces";
+import { useMutation } from "react-query";
+import { request } from "@/utils/request";
 import { UserOutlined, LockOutlined, UserAddOutlined } from "@ant-design/icons";
-import { userRegister } from "@/api/modules/login";
 
 export default function RegisterForm() {
   const navigate = useNavigate();
   const [form] = Form.useForm();
-  const [loading, setLoading] = useState<boolean>(false);
-  const { runAsync: runRegister } = useRequest(
-    (params) => userRegister(params),
+  const { mutateAsync: register, isLoading } = useMutation(
+    (data: IRegisterForm) =>
+      request.post("/auth/register", data).then((res) => res.data),
     {
-      manual: true,
-      throttleWait: 1000,
+      onSuccess: () => {
+        message.success("注册成功");
+        navigate("/login");
+      },
     }
   );
 
-  // 注册
-  const onFinish = async (registerForm: IRegisterForm) => {
-    try {
-      setLoading(true);
-      await runRegister(registerForm)
-        .then((res) => {
-          if (res.data.code >= 200 && res.data.code < 300) {
-            message.success("注册成功！");
-            navigate("/login");
-          } else {
-            message.error(res.data);
-          }
-        })
-        .catch((err) => {
-          message.error(err.message);
-        });
-    } finally {
-      setLoading(false);
-    }
-  };
+  const onFinish = useCallback(
+    (values: IRegisterForm) => {
+      register(values);
+    },
+    [register]
+  );
 
   const onFinishFailed = (errorInfo: any) => {
     console.log("Failed:", errorInfo);
@@ -81,7 +69,7 @@ export default function RegisterForm() {
         <Button
           type="primary"
           htmlType="submit"
-          loading={loading}
+          loading={isLoading}
           icon={<UserOutlined />}
         >
           注册

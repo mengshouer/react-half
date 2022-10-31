@@ -1,20 +1,17 @@
-import Axios from "axios";
-import { message } from "antd";
-import NProgress from "nprogress";
-import "nprogress/nprogress.css";
+import axios from "axios";
+import { notification } from "antd";
 import { BACKEND_ADDRESS } from "@/utils/config";
 
 const HTTP_API = BACKEND_ADDRESS;
 const WHITE_API = ["/auth/login", "/auth/register"];
-const request = Axios.create({
+const _request = axios.create({
   baseURL: HTTP_API,
   timeout: 1000 * 6,
   withCredentials: true,
 });
 
-request.interceptors.request.use(
+_request.interceptors.request.use(
   (config) => {
-    NProgress.start();
     const { url } = config;
     // is white list
     if (!WHITE_API.includes(url!)) {
@@ -22,6 +19,8 @@ request.interceptors.request.use(
       const token = localStorage.getItem("auth-token");
       if (token) {
         config.headers!.Authorization = `Bearer ${token}`;
+      } else {
+        window.location.href = "#/login";
       }
     }
     return config;
@@ -31,31 +30,33 @@ request.interceptors.request.use(
   }
 );
 
-request.interceptors.response.use(
+_request.interceptors.response.use(
   (response) => {
-    NProgress.done();
     const { status, data } = response;
+    if (status === 401 || data.code === 401) {
+      return Promise.reject(response);
+    }
     if (status === 200) {
       if (!data.code && data.message) {
-        message.error(data.message || "Error");
         return Promise.reject(response);
       }
-      return data;
     }
-    if (status === 401 || data.code === 401) {
-      message.error("登录状态失效，请重新登录");
-      window.location.href = "/login";
-      localStorage.removeItem("auth-token");
-      return Promise.reject(response);
-    } else {
-      message.error(data.message || "Error");
-      return Promise.reject(response);
-    }
+    return response;
   },
   (error) => {
-    console.log(error);
+    console.log("err:", error);
+    const { status, data } = error.response;
+    if (status === 401) {
+      window.location.href = "#/login";
+      window.localStorage.removeItem("auth-token");
+    } else {
+      notification.error({
+        message: `请求错误`,
+        description: data?.msg || "Error",
+      });
+    }
     return Promise.reject(error);
   }
 );
 
-export default request;
+export const request = _request;

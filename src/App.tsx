@@ -1,15 +1,17 @@
-import AuthRouter from "@/routers/utils/authRouter";
+import { HashRouter } from "react-router-dom";
+import { QueryClientProvider, QueryClient } from "react-query";
 import Router from "@/routers";
-import { BrowserRouter } from "react-router-dom";
+
+const queryClient = new QueryClient();
 
 export default function App() {
   return (
     <div className="App">
-      <BrowserRouter>
-        <AuthRouter>
+      <QueryClientProvider client={queryClient}>
+        <HashRouter>
           <Router />
-        </AuthRouter>
-      </BrowserRouter>
+        </HashRouter>
+      </QueryClientProvider>
     </div>
   );
 }

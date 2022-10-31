@@ -26,17 +26,13 @@ export default defineConfig({
     port: Number(process.env.VITE_APP_PORT) || 31212,
     cors: true,
   },
+  optimizeDeps: {
+    include: ["@ant-design/colors", "@ant-design/icons"],
+  },
   build: {
     outDir: "dist",
-    // esbuild 打包更快，但是不能去除 console.log，去除 console 使用 terser 模式
     minify: "esbuild",
-    // minify: "terser",
-    // terserOptions: {
-    // 	compress: {
-    // 		drop_console: viteEnv.VITE_DROP_CONSOLE,
-    // 		drop_debugger: true
-    // 	}
-    // },
+    // sourcemap: true,
     rollupOptions: {
       output: {
         // Static resource classification and packaging

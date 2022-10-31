@@ -3,8 +3,9 @@ import { Menu, message, Spin } from "antd";
 import type { MenuProps } from "antd";
 import * as Icons from "@ant-design/icons";
 import { useNavigate, useLocation } from "react-router-dom";
+import { useQuery, useQueryClient } from "react-query";
+import { request } from "@/utils/request";
 import { useStore, observer } from "@/store";
-import { getMenuList } from "@/api/modules/menulist";
 import { MenuOptions, MenuItem } from "@/api/interfaces";
 
 const menuStyles = { height: "100%", borderRight: 0 };
@@ -30,8 +31,21 @@ function MenuList() {
   const { menuStore } = useStore();
   const navigate = useNavigate();
   const { pathname } = useLocation();
-  const [loading, setLoading] = useState(false);
   const [selectedKeys, setSelectedKeys] = useState([pathname]);
+  const { isLoading, isError } = useQuery<MenuOptions[]>(
+    "menuList",
+    () => request.get("/menu/list").then((res) => res.data.data),
+    {
+      onSuccess: (data: any) => {
+        menuStore.setMenuData(data);
+        menuStore.setMenuList(deepLoopFloat(data));
+      },
+      onError: () => {
+        window.localStorage.removeItem("auth-token");
+        message.error("获取菜单列表失败！");
+      },
+    }
+  );
 
   // 动态渲染 Icon 图标
   const customIcons: { [key: string]: any } = Icons;
@@ -62,23 +76,23 @@ function MenuList() {
     []
   );
 
-  const getMenuItem = async () => {
-    setLoading(true);
-    try {
-      const data: { code: number; data: MenuOptions[] } = await getMenuList();
-      if (data.code === 401) {
-        message.error("登录信息失效，请重新登录！");
-        navigate("/login");
-      } else if (data.code !== 200) {
-        message.error("获取菜单列表失败！");
-        return;
-      }
-      menuStore.setMenuData(data.data);
-      menuStore.setMenuList(deepLoopFloat(data.data));
-    } finally {
-      setLoading(false);
-    }
-  };
+  // const getMenuItem = async () => {
+  //   setLoading(true);
+  //   try {
+  //     const data: { code: number; data: MenuOptions[] } = await getMenuList();
+  //     if (data.code === 401) {
+  //       message.error("登录信息失效，请重新登录！");
+  //       navigate("/login");
+  //     } else if (data.code !== 200) {
+  //       message.error("获取菜单列表失败！");
+  //       return;
+  //     }
+  //     menuStore.setMenuData(data.data);
+  //     menuStore.setMenuList(deepLoopFloat(data.data));
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
 
   const onClick: MenuProps["onClick"] = useCallback(
     ({ key }: { key: string }) => {
@@ -88,15 +102,11 @@ function MenuList() {
   );
 
   useEffect(() => {
-    getMenuItem();
-  }, []);
-
-  useEffect(() => {
     setSelectedKeys([pathname]);
   }, [pathname]);
 
   return (
-    <Spin spinning={loading} tip="Loading...">
+    <Spin spinning={isLoading} tip="Loading...">
       <Menu
         theme="light"
         onClick={onClick}

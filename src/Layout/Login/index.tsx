@@ -8,7 +8,12 @@ export default function LoginIndex() {
       <div className="login-box">
         <div className="login-form">
           <div className="login-logo">
-            <img className="login-icon" src={logo} alt="logo" />
+            <img
+              className="login-icon"
+              src={logo}
+              alt="logo"
+              style={{ width: "70px", height: "62.33px" }}
+            />
             <span className="logo-text">Half-Half</span>
           </div>
           <Outlet />

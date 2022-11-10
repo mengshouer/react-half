@@ -23,6 +23,7 @@ specifiers:
   typescript: ^4.7.4
   vite: ^3.0.7
   vite-plugin-html: ^3.2.0
+  vite-plugin-imp: ^2.3.1
 
 dependencies:
   antd: 4.23.5_biqbaboplfbrettd7655fr4n2y
@@ -49,6 +50,7 @@ devDependencies:
   typescript: 4.8.4
   vite: 3.1.7_less@4.1.3
   vite-plugin-html: 3.2.0_vite@3.1.7
+  vite-plugin-imp: 2.3.1_vite@3.1.7
 
 packages:
 
@@ -506,8 +508,8 @@ packages:
       - supports-color
     dev: true
 
-  /acorn/8.8.0:
-    resolution: {integrity: sha512-QOxyigPVrpZ2GXT+PFyZTl6TtOFc5egxHIP9IlQ+RbupQuX4RkT/Bee4/kQuC02Xkzg84JcT7oLYtDIQxp+v7w==}
+  /acorn/8.8.1:
+    resolution: {integrity: sha512-7zFpHzhnqYKrkYdUjF1HI1bzd0VygEGX8lFk4k5zVMqHEoES+P+7TKI+EvLO9WVMJ8eekdO0aDEK044xTXwPPA==}
     engines: {node: '>=0.4.0'}
     hasBin: true
     dev: true
@@ -2400,7 +2402,7 @@ packages:
     hasBin: true
     dependencies:
       '@jridgewell/source-map': 0.3.2
-      acorn: 8.8.0
+      acorn: 8.8.1
       commander: 2.20.3
       source-map-support: 0.5.21
     dev: true
@@ -2476,6 +2478,23 @@ packages:
       node-html-parser: 5.4.2
       pathe: 0.2.0
       vite: 3.1.7_less@4.1.3
+    dev: true
+
+  /vite-plugin-imp/2.3.1_vite@3.1.7:
+    resolution: {integrity: sha512-Lp0FZBIIfXq/PyTRh+5e5tqgS6vJZewAx/fodgf/Z1Pk1jQzMiKw5gRn0xXqDEbm7A7avz6X1Le01Mp/LYMtoQ==}
+    peerDependencies:
+      vite: '>= 2.0.0-beta.5'
+    dependencies:
+      '@babel/core': 7.19.3
+      '@babel/generator': 7.19.4
+      '@babel/parser': 7.19.4
+      '@babel/traverse': 7.19.4
+      chalk: 4.1.2
+      param-case: 3.0.4
+      pascal-case: 3.1.2
+      vite: 3.1.7_less@4.1.3
+    transitivePeerDependencies:
+      - supports-color
     dev: true
 
   /vite/3.1.7_less@4.1.3:

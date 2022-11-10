@@ -2,21 +2,17 @@ import { resolve } from "path";
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import { createHtmlPlugin } from "vite-plugin-html";
+import vitePluginImp from "vite-plugin-imp";
 import "dotenv/config";
 
 // https://vitejs.dev/config/
 export default defineConfig({
   resolve: {
-    alias: {
-      "@": resolve(__dirname, "./src"),
-    },
+    alias: [{ find: "@", replacement: resolve(__dirname, "./src") }],
   },
   css: {
     preprocessorOptions: {
       less: {
-        modifyVars: {
-          "primary-color": "#1890ff",
-        },
         javascriptEnabled: true,
       },
     },
@@ -27,7 +23,7 @@ export default defineConfig({
     cors: true,
   },
   optimizeDeps: {
-    include: ["@ant-design/colors", "@ant-design/icons"],
+    include: ["@ant-design/icons"],
   },
   build: {
     outDir: "dist",
@@ -44,6 +40,14 @@ export default defineConfig({
   },
   plugins: [
     react(),
+    vitePluginImp({
+      libList: [
+        {
+          libName: "antd",
+          style: (name) => `antd/es/${name}/style/index.js`,
+        },
+      ],
+    }),
     createHtmlPlugin({
       inject: {
         data: {
